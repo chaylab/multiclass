@@ -1,0 +1,5 @@
+# dat file
+*.dat
+
+#python cache
+/__pycache__
