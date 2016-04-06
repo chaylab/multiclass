@@ -1,16 +1,30 @@
+import math
 class leaves:
     def __init__(self,n=2):
+        print("__init leaves__");
         self.n=n
-        self.it=0
-        self.num=[[i] for i in range(1,n+1)]
-        self.tar=self.rec(self.n,self.num)
-        self.lim=len(self.tar)
+        self.m=int(math.ceil(math.log(n,2)))
+        print("n {0} m {1}".format(self.n,self.m))
 
-    def get(self):
-        if self.it < self.lim:
-            self.it+=1
-            return self.tar[self.it-1]
-        return None
+        self.tar=[[] for i in range(self.m+1)]
+        self.tar[0]=[[i] for i in range(1,n+1)]
+        self.dat=[]
+
+        self.gen()
+        print("generate complete")
+        self.com(self.m,self.n,[],[])
+        print("compond complete")
+
+    def getAll(self):
+        return self.dat
+
+    def checkin(self,x,y):
+        for i in x:
+            if i in y:
+                return False
+        for i in x:
+            y.append(i)
+        return True
 
     def fun(self,num):
         l=len(num)
@@ -18,28 +32,41 @@ class leaves:
         for i in range(l):
             tmp=[j for j in num[i]]
             for j in range(i+1,l):
-                x=0
-                for k in num[j]:
-                    if k in tmp:
-                        x+=1
-                if x==0:
-                    for k in num[j]:
-                        tmp.append(k)
+                if self.checkin(num[j],tmp):
                     tar.append(num[i]+num[j])
         return tar[:]
 
-    def rec(self,n,num):
-        if n==1:
-            return num
-        return self.rec(n/2,self.fun(num))
+    def gen(self):
+        for i in range(1,self.m+1):
+            self.tar[i]=self.fun(self.tar[i-1])
+        #self.tar[1]=self.fun(self.tar[0])
+        #print(self.tar[1])
 
-    def show(self):
-        [print (i,end=' ') for i in self.tar]
+    def com(self,it,n,tmp,used):
+        #print(it,n,tmp,used)
+        if it==0:
+            self.dat.append(tmp)
+            return 1;
+        if n&(1<<(it-1))>0:
+            for i in self.tar[(it-1)]:
+                tused=used[:]
+                if self.checkin(i,tused):
+                    self.com(it-1,n%(1<<it),tmp+i,tused)
+        else:
+            self.com(it-1,n%(1<<it),tmp,used)
+
+    def showN(self,n):
+        [print (i) for i in self.tar[n]]
+
+    def showAll(self):
+        [print(i) for i in self.dat]
+
 
 if __name__ == '__main__':
-    leaf=leaves(4)
-    print(leaf.get())
-    print(leaf.get())
-    print(leaf.get())
-    print(leaf.get())
+    leaf=leaves(6)
+    leaf.showAll()
+    #leaf.showN(1)
+    #leaf.show()
+    #while leaf.get()!=None:
+    #    print ('x')
     #leaf.show()
