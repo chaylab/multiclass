@@ -1,19 +1,19 @@
 import math
 class leaves:
     def __init__(self,n=2):
-        print("__init leaves__");
+        #print("__init leaves__");
         self.n=n
         self.m=int(math.ceil(math.log(n,2)))
-        print("n {0} m {1}".format(self.n,self.m))
+        #print("n {0} m {1}".format(self.n,self.m))
 
         self.tar=[[] for i in range(self.m+1)]
         self.tar[0]=[[i] for i in range(1,n+1)]
         self.dat=[]
 
         self.gen()
-        print("generate complete")
+        #print("generate complete")
         self.com(self.m,self.n,[],[])
-        print("compond complete")
+        #print("compond complete")
 
     def getAll(self):
         return self.dat
@@ -39,8 +39,6 @@ class leaves:
     def gen(self):
         for i in range(1,self.m+1):
             self.tar[i]=self.fun(self.tar[i-1])
-        #self.tar[1]=self.fun(self.tar[0])
-        #print(self.tar[1])
 
     def com(self,it,n,tmp,used):
         #print(it,n,tmp,used)
