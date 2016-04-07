@@ -2,10 +2,8 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from sklearn.svm import SVC
-from sklearn.svm import LinearSVC
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC,LinearSVC
+from sklearn.tree import DecisionTreeRegressor,DecisionTreeClassifier
 from loaddata import loadData
 from leaves import leaves
 class filterTree:
@@ -118,7 +116,7 @@ if __name__=='__main__':
     #ft.plotClf()
     #print (ft.test([1.5,-1.5]))
 
-    for i in range(1,11):
+    '''for i in range(1,11):
         s="led7digit"
         n=10
         stra='dataset/'+s+'/'+s+'-'+str(n)+'dobscv-'+str(i)+'tra.dat'
@@ -138,4 +136,4 @@ if __name__=='__main__':
             if er>mx:
                 mx=er
                 per=i[:]
-        print (per,mx)
+        print (per,mx)'''
