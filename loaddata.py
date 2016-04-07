@@ -1,7 +1,10 @@
 import re
 class loadData:
     def __init__(self,fname='in.dat'):
-        self.file=open(fname,'r')
+        try:
+            self.file=open(fname,'r')
+        except:
+            print("load file error")
         self.cls={}
         self.X=[]
         self.Y=[]
@@ -10,9 +13,10 @@ class loadData:
     def load(self):
         for str in self.file:
             if re.match('@\w*',str)!=None:
-                if re.match('@attribute Class',str)!=None:
+                if re.match('@attribute \w*{',str)!=None:
+                    st=str.index('{')+1
                     j=0
-                    for i in re.split(',',str[17:-2]):
+                    for i in re.split(',',str[st:-2]):
                         self.cls[i]=j
                         j+=1
                     #print (self.cls)
@@ -34,9 +38,10 @@ class loadData:
         return self.Y
 
     def getK(self):
-        return self.k    
+        return self.k
 
 if __name__=='__main__':
-    dat=loadData()
+    dat=loadData('dataset/yeast/yeast-10dobscv-1tra.dat')
+    #dat=loadData('dataset/led7digit/led7digit-10dobscv-1tra.dat')
     dat.load()
-    dat.show()
+    #dat.show()

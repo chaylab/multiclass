@@ -1,7 +1,11 @@
 #from leaves import leaves
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.tree import DecisionTreeClassifier
 from loaddata import loadData
 from leaves import leaves
 class filterTree:
@@ -10,7 +14,9 @@ class filterTree:
         self.k=len(num)
         self.k=int(2**math.ceil(math.log(self.k,2)))
         self.num=num
-        self.clf=[SVC()]*(self.k-1)
+        #self.clf=[SVC(kernel='linear') for i in range(self.k-1)]
+        #self.clf=[DecisionTreeClassifier() for i in range(self.k-1)]
+        self.clf=[LinearSVC() for i in range(self.k-1)]
         self.datX=[[] for i in range(self.k)]
         self.datY=[[] for i in range(self.k)]
         self.winby=[0 for i in range(self.k)]
@@ -67,23 +73,69 @@ class filterTree:
         cor=0
         l=len(X)
         for i in range(l):
-            if self.test(X[i])==Y[i]:
+            ans=self.test(X[i])
+            #print(ans,Y[i])
+            if ans==Y[i]:
                 cor+=1
         return cor/l
 
+    def plotClf(self):
+        for i in range(self.k-1):
+            if self.winby[i]==1 or len(self.datX[i])==0: continue
+            X=np.array(self.datX[i]).T
+            Y=self.datY[i]
+            plt.figure(i, figsize=(5, 5))
+            plt.clf()
+            plt.scatter(self.clf[i].support_vectors_[:, 0], self.clf[i].support_vectors_[:, 1], s=80,facecolors='none', zorder=10)
+            plt.scatter(X[:, 0], X[:, 1], c=Y, zorder=10, cmap=plt.cm.Paired)
+
+            plt.axis('tight')
+            x_min = -5
+            x_max = 5
+            y_min = -5
+            y_max = 5
+
+            XX, YY = np.mgrid[x_min:x_max:200j, y_min:y_max:200j]
+            Z = self.clf[i].decision_function(np.c_[XX.ravel(), YY.ravel()])
+
+            # Put the result into a color plot
+            Z = Z.reshape(XX.shape)
+            plt.figure(i, figsize=(5, 5))
+            plt.pcolormesh(XX, YY, Z > 0, cmap=plt.cm.Paired)
+            plt.contour(XX, YY, Z, colors=['k', 'k', 'k'], linestyles=['--', '-', '--'],levels=[-.5, 0, .5])
+
+            plt.xlim(x_min, x_max)
+            plt.ylim(y_min, y_max)
+
+            plt.xticks(())
+            plt.yticks(())
+        plt.show()
+
 if __name__=='__main__':
 
-    #ft=filterTree([i+1 for i in range(4)])
-    #ft.train([[1],[2],[3],[4]],[0,1,2,3])
+    #ft=filterTree([1,2,3,4])
+    #ft.train([[1,0],[0,1],[-1,-1],[-2,-2],[1,-2],[-2,1]],[0,0,2,2,1,3])
+    #ft.plotClf()
+    #print (ft.test([1.5,-1.5]))
 
-    data=loadData('in.dat')
-    data.load()
-    tst=loadData('out.dat')
-    tst.load()
-
-    lv=leaves(data.getK()).getAll()
-
-    for i in lv:
-        ft=filterTree(i)
-        ft.train(data.getX(),data.getY())
-        print (i,ft.perf(tst.getX(),tst.getY()))
+    for i in range(1,11):
+        s="led7digit"
+        n=10
+        stra='dataset/'+s+'/'+s+'-'+str(n)+'dobscv-'+str(i)+'tra.dat'
+        stst='dataset/'+s+'/'+s+'-'+str(n)+'dobscv-'+str(i)+'tst.dat'
+        data=loadData(stra)
+        data.load()
+        tst=loadData(stst)
+        tst.load()
+        #print("load {0} complete".format(stra))
+        lv=leaves(data.getK()).getAll()
+        #print("generate leaves complete")
+        mx=0
+        for i in lv:
+            ft=filterTree(i)
+            ft.train(data.getX(),data.getY())
+            er=ft.perf(tst.getX(),tst.getY())
+            if er>mx:
+                mx=er
+                per=i[:]
+        print (per,mx)
