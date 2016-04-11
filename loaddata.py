@@ -40,6 +40,9 @@ class loadData:
     def getK(self):
         return self.k
 
+    def getData(self):
+        return (self.X,self.Y)
+
 if __name__=='__main__':
     dat=loadData('dataset/yeast/yeast-10dobscv-1tra.dat')
     #dat=loadData('dataset/led7digit/led7digit-10dobscv-1tra.dat')

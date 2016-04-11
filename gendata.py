@@ -21,7 +21,7 @@ class genData(object):
     def plot(self):
         X,Y=self.X,self.Y
         plt.figure(figsize=(8, 8))
-        print(X[:, 0])
+        #print(X[:, 0])
         for i in range(self.n):
             x=[X[j][0] for j in range(Y.size) if Y[j]==i]
             y=[X[j][1] for j in range(Y.size) if Y[j]==i]
