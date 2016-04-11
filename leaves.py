@@ -10,10 +10,14 @@ class leaves:
         self.tar[0]=[[i] for i in range(1,n+1)]
         self.dat=[]
 
+        '''
         self.gen()
         #print("generate complete")
         self.com(self.m,self.n,[],[])
         #print("compond complete")
+        '''
+
+        self.permu(n,[0 for i in range(n+1)],[0 for i in range(n)])
 
     def getAll(self):
         return self.dat
@@ -59,9 +63,20 @@ class leaves:
     def showAll(self):
         [print(i) for i in self.dat]
 
+    def permu(self,n,used,tmp):
+        if n==0:
+            self.dat.append(tmp[:])
+        for i in range(1,self.n+1):
+            if used[i]==0:
+                used[i]=1
+                tmp[n-1]=i
+                self.permu(n-1,used,tmp)
+                used[i]=0
+
+
 
 if __name__ == '__main__':
-    leaf=leaves(6)
+    leaf=leaves(4)
     leaf.showAll()
     #leaf.showN(1)
     #leaf.show()
