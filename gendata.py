@@ -45,6 +45,9 @@ class genData(object):
             s=', '.join([str(j) for j in (self.X[i].tolist()+[self.Y[i]])])
             fname.write(s+'\n')
 
+    def getK(self):
+        return self.n
+
 if __name__=='__main__':
     #data=genData([2,1,3,4,5],1000,200)
     #data.plot()
