@@ -1,5 +1,13 @@
-# dat file
-*.dat
+# dat image file
+*.dait
+*.png
+
+# experiment dir
+/exp
+/dataset
 
 #python cache
 /__pycache__
+
+#dump
+.gitignore~
