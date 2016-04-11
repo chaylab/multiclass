@@ -1,4 +1,5 @@
 import re
+import matplotlib.pyplot as plt
 class loadData:
     def __init__(self,fname='in.dat'):
         try:
@@ -48,9 +49,9 @@ class loadData:
         X,Y=self.X,self.Y
         plt.figure(figsize=(8, 8))
         #print(X[:, 0])
-        for i in range(self.n):
-            x=[X[j][0] for j in range(Y.size) if Y[j]==i]
-            y=[X[j][1] for j in range(Y.size) if Y[j]==i]
+        for i in range(self.k):
+            x=[X[j][0] for j in range(len(Y)) if Y[j]==i]
+            y=[X[j][1] for j in range(len(Y)) if Y[j]==i]
             z='rbgyc'[i]
             plt.scatter(x,y, marker='x',color=z, label=str(i+1))
         #plt.scatter(X[:, 0], X[:, 1], marker='x', c=Y, label=str(Y))
