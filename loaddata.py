@@ -9,6 +9,7 @@ class loadData:
         self.X=[]
         self.Y=[]
         self.k=2
+        self.load()
 
     def load(self):
         for str in self.file:
@@ -42,6 +43,20 @@ class loadData:
 
     def getData(self):
         return (self.X,self.Y)
+
+    def plot(self):
+        X,Y=self.X,self.Y
+        plt.figure(figsize=(8, 8))
+        #print(X[:, 0])
+        for i in range(self.n):
+            x=[X[j][0] for j in range(Y.size) if Y[j]==i]
+            y=[X[j][1] for j in range(Y.size) if Y[j]==i]
+            z='rbgyc'[i]
+            plt.scatter(x,y, marker='x',color=z, label=str(i+1))
+        #plt.scatter(X[:, 0], X[:, 1], marker='x', c=Y, label=str(Y))
+        plt.legend(scatterpoints=1,fontsize=8)
+
+        plt.show()
 
 if __name__=='__main__':
     dat=loadData('dataset/yeast/yeast-10dobscv-1tra.dat')
