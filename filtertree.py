@@ -1,20 +1,21 @@
 #from leaves import leaves
-import numpy as np
 import math
 import matplotlib.pyplot as plt
-from sklearn.svm import SVC,LinearSVC
-from sklearn.tree import DecisionTreeRegressor,DecisionTreeClassifier
+import numpy as np
 from loaddata import loadData
 from leaves import leaves
+from sklearn.svm import SVC,LinearSVC
+from sklearn.tree import DecisionTreeRegressor,DecisionTreeClassifier
 class filterTree:
     def __init__(self,num):
         #print("__init filterTree__")
         self.k=len(num)
         self.k=int(2**math.ceil(math.log(self.k,2)))
         self.num=num
-        #self.clf=[SVC(kernel='linear') for i in range(self.k-1)]
+        #self.clf=[clf for i in range(self.k-1)]
+        self.clf=[SVC(kernel='linear') for i in range(self.k-1)]
         #self.clf=[DecisionTreeClassifier() for i in range(self.k-1)]
-        self.clf=[LinearSVC() for i in range(self.k-1)]
+        #self.clf=[LinearSVC() for i in range(self.k-1)]
         self.datX=[[] for i in range(self.k)]
         self.datY=[[] for i in range(self.k)]
         self.winby=[0 for i in range(self.k)]
@@ -62,7 +63,6 @@ class filterTree:
             pdt=[1]
         else:
             pdt=self.clf[n].predict([X])
-        #print (X,n,pdt)
         if pdt[0]==0:
             return self.test(X,2*n+2)
         return self.test(X,2*n+1)
@@ -71,36 +71,36 @@ class filterTree:
         cor=0
         l=len(X)
         for i in range(l):
-            ans=self.test(X[i])
-            #print(ans,Y[i])
+            ans=self.num[self.test(X[i])]-1
             if ans==Y[i]:
                 cor+=1
         return cor/l
 
     def plotClf(self):
-        for i in range(self.k-1):
+        for i in range(0,1):
             if self.winby[i]==1 or len(self.datX[i])==0: continue
-            X=np.array(self.datX[i]).T
+            X=np.array(self.datX[i])
             Y=self.datY[i]
-            plt.figure(i, figsize=(5, 5))
+            plt.figure(i, figsize=(8, 8))
             plt.clf()
             plt.scatter(self.clf[i].support_vectors_[:, 0], self.clf[i].support_vectors_[:, 1], s=80,facecolors='none', zorder=10)
             plt.scatter(X[:, 0], X[:, 1], c=Y, zorder=10, cmap=plt.cm.Paired)
+            #plt.scatter(X[:, 0], X[:, 1], c=Y, zorder=10, marker='x')
 
             plt.axis('tight')
             x_min = -5
-            x_max = 5
+            x_max = 20
             y_min = -5
-            y_max = 5
+            y_max = 20
 
             XX, YY = np.mgrid[x_min:x_max:200j, y_min:y_max:200j]
             Z = self.clf[i].decision_function(np.c_[XX.ravel(), YY.ravel()])
 
             # Put the result into a color plot
             Z = Z.reshape(XX.shape)
-            plt.figure(i, figsize=(5, 5))
+            plt.figure(i, figsize=(8, 8))
             plt.pcolormesh(XX, YY, Z > 0, cmap=plt.cm.Paired)
-            plt.contour(XX, YY, Z, colors=['k', 'k', 'k'], linestyles=['--', '-', '--'],levels=[-.5, 0, .5])
+            plt.contour(XX, YY, Z, colors=['r', 'b', 'g'], linestyles=['--', '-', '--'],levels=[-.5, 0, .5])
 
             plt.xlim(x_min, x_max)
             plt.ylim(y_min, y_max)
@@ -115,6 +115,10 @@ if __name__=='__main__':
     #ft.train([[1,0],[0,1],[-1,-1],[-2,-2],[1,-2],[-2,1]],[0,0,2,2,1,3])
     #ft.plotClf()
     #print (ft.test([1.5,-1.5]))
+
+    ft=filterTree([2,1,4,3,5])
+    ft.train([(3, 3), (9, 9), (6, 6), (15, 15), (12, 12)],[0,1,2,3,4])
+    ft.plotClf()
 
     '''for i in range(1,11):
         s="led7digit"
