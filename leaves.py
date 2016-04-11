@@ -45,7 +45,7 @@ class leaves:
             self.tar[i]=self.fun(self.tar[i-1])
 
     def com(self,it,n,tmp,used):
-        print(it,n,tmp,used)
+        #print(it,n,tmp,used)
         if it==0:
             self.dat.append(tmp)
             return 1;
