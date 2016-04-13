@@ -45,6 +45,9 @@ class loadData:
     def getData(self):
         return (self.X,self.Y)
 
+    def getFeature(self):
+        return len(self.X[0])
+        
     def plot(self):
         X,Y=self.X,self.Y
         plt.figure(figsize=(8, 8))
