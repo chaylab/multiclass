@@ -77,7 +77,7 @@ class filterTree:
             ans=self.num[self.test(X[i])]-1
             if ans==Y[i]:
                 cor+=1
-        return cor/l
+        return (l-cor)/l
 
     def plotClf(self):
         for i in range(0,1):
