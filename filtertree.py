@@ -13,11 +13,14 @@ class filterTree:
         self.k=int(2**math.ceil(math.log(self.k,2)))
         self.num=num
         #self.clf=[clf for i in range(self.k-1)]
-        self.clf=[SVC(kernel='linear') for i in range(self.k-1)]
-        #self.clf=[DecisionTreeClassifier() for i in range(self.k-1)]
+        #self.clf=[SVC(kernel='linear') for i in range(self.k-1)]
+        #self.clf=[SVC(kernel='poly') for i in range(self.k-1)]
+        #self.clf=[SVC(kernel='rbf') for i in range(self.k-1)]
+        self.clf=[DecisionTreeClassifier() for i in range(self.k-1)]
+        #self.clf=[DecisionTreeRegressor() for i in range(self.k-1)]
         #self.clf=[LinearSVC() for i in range(self.k-1)]
-        self.datX=[[] for i in range(self.k)]
-        self.datY=[[] for i in range(self.k)]
+        self.dataX=[[] for i in range(self.k)]
+        self.dataY=[[] for i in range(self.k)]
         self.winby=[0 for i in range(self.k)]
 
         x=self.getPos(num[-1])
@@ -39,22 +42,22 @@ class filterTree:
             k=self.getPos(Y[i]+1)
             j=(k-1)/2
             while j>=0:
-                self.datX[int(j)].append(X[i])
+                self.dataX[int(j)].append(X[i])
                 #1 left 0 other(right)
-                self.datY[int(j)].append(int(k)%2)
+                self.dataY[int(j)].append(int(k)%2)
                 k=j
                 j=(j-1)/2
         for i in range(self.k-1):
-            if self.winby[i]==0 and len(self.datX[i])>0:
-                A=np.array(self.datX[i])
-                B=np.array(self.datY[i])
+            if self.winby[i]==0 and len(self.dataX[i])>0:
+                A=np.array(self.dataX[i])
+                B=np.array(self.dataY[i])
                 #print (B)
                 try:
                     self.clf[i].fit(A,B)
                 except:
-                    print(self.datX[i])
+                    print(self.dataX[i])
         #print("training complete")
-        #[print (i,self.datX[i], self.datY[i]) for i in range(self.k-1)]
+        #[print (i,self.dataX[i], self.dataY[i]) for i in range(self.k-1)]
 
     def test(self,X,n=0): #X is list
         if n>=self.k-1:
@@ -78,33 +81,27 @@ class filterTree:
 
     def plotClf(self):
         for i in range(0,1):
-            if self.winby[i]==1 or len(self.datX[i])==0: continue
-            X=np.array(self.datX[i])
-            Y=self.datY[i]
+        #for i in range(self.k-1)
+            if self.winby[i]==1 or len(self.dataX[i])==0: continue
+            X=np.array(self.dataX[i])
+            Y=self.dataY[i]
             plt.figure(i, figsize=(8, 8))
+            plt.title('classifier{0} {1}'.format(i,repr(self.num)))
             plt.clf()
             plt.scatter(self.clf[i].support_vectors_[:, 0], self.clf[i].support_vectors_[:, 1], s=80,facecolors='none', zorder=10)
-            plt.scatter(X[:, 0], X[:, 1], c=Y, zorder=10, cmap=plt.cm.Paired)
-            #plt.scatter(X[:, 0], X[:, 1], c=Y, zorder=10, marker='x')
+            #plt.scatter(X[:, 0], X[:, 1], c=Y, zorder=10, cmap=plt.cm.Paired)
+            plt.scatter(X[:, 0], X[:, 1], c=Y, zorder=10, marker='x')
 
             plt.axis('tight')
-            x_min = -5
-            x_max = 20
-            y_min = -5
-            y_max = 20
-
+            x_min,x_max,y_min,y_max= -5,20,-5,20
             XX, YY = np.mgrid[x_min:x_max:200j, y_min:y_max:200j]
             Z = self.clf[i].decision_function(np.c_[XX.ravel(), YY.ravel()])
-
-            # Put the result into a color plot
             Z = Z.reshape(XX.shape)
             plt.figure(i, figsize=(8, 8))
             plt.pcolormesh(XX, YY, Z > 0, cmap=plt.cm.Paired)
-            plt.contour(XX, YY, Z, colors=['r', 'b', 'g'], linestyles=['--', '-', '--'],levels=[-.5, 0, .5])
-
+            plt.contour(XX, YY, Z, colors=['r', 'k', 'b'], linestyles=['--', '-', '--'],levels=[-.5, 0, .5])
             plt.xlim(x_min, x_max)
             plt.ylim(y_min, y_max)
-
             plt.xticks(())
             plt.yticks(())
         plt.show()
