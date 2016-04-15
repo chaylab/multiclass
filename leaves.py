@@ -62,12 +62,15 @@ class leaves:
     def getData(self):
         return self.data
 
+    def getNData(self):
+        return len(self.data)
+
     def showTar(self,n):
         [print (i) for i in self.tar[n]]
 
     def showData(self):
         [print(i) for i in self.data]
-        
+
 if __name__ == '__main__':
     leaf=leaves(5)
     leaf.showData()
