@@ -29,15 +29,14 @@ if __name__=='__main__':
         er=ft[j].perf(tX,tY)
         avg+=er
         print(i,er)
-        if er<mn:
-            mk=k
-            mn=er
-            perm=i[:]
-
         if er>mx:
             mj=j
             mx=er
             per=i[:]
+        if er<mn:
+            mk=k
+            mn=er
+            perm=i[:]
         else:
             pass
             #ft[j]=True
