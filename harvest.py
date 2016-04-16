@@ -37,17 +37,16 @@ def fun(Data):
 
 if __name__=='__main__':
     fileList=['yeast']
-    #fileList=['yeast','ecoli','flare','glass','led7digit','lymphography','nursery','page-blocks','satimage','vehicle','vowel']
-    numList={'yeast':10,'ecoli':8,'flare':6,'glass':7,'led7digit':10,'lymphography':4,'nursery':5,'page-blocks':5,'satimage':7,'vehicle':4,'vowel':11}
+    #fileList=['ecoli','flare','glass','led7digit','lymphography','nursery','page-blocks','satimage','vehicle']
+    numList={'yeast':10,'ecoli':8,'flare':6,'glass':7,'led7digit':10,'lymphography':4,'nursery':5,'page-blocks':5,'satimage':7,'vehicle':4}
     #clfList=['linear']
-    clfList=['linear','rbf','decision','knn','nb','rf']
+    clfList=['linear','rbf','decision','knn','nb']
     n=11
-    work=0
     pool = mp.Pool()
     for rela in fileList:
         leaf=leaves(numList[rela])
         lv=leaf.getData()
-        for t in range(1,n):
+        for t in range(5,n):
             pool.apply_async(fun, args = ((rela,t,lv,leaf.getNData()),))
     pool.close()
     pool.join()

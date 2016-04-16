@@ -76,4 +76,4 @@ class leaves:
 if __name__ == '__main__':
     leaf=leaves(10)
     #leaf.showTar(2)
-    leaf.showData()
+    print(leaf.getNData())
