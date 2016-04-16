@@ -30,6 +30,8 @@ class leaves:
             for j in range(i+1,l):
                 if self.checkin(num[j],tmp):
                     tar.append(num[i]+num[j])
+                    for k in num[j]:
+                        tmp.remove(k)
         return tar[:]
 
     def gen(self):
@@ -72,5 +74,6 @@ class leaves:
         [print(i) for i in self.data]
 
 if __name__ == '__main__':
-    leaf=leaves(5)
+    leaf=leaves(10)
+    #leaf.showTar(2)
     leaf.showData()
