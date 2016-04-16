@@ -2,6 +2,7 @@ from filtertree import filterTree
 from gendata import genData
 from leaves import leaves
 from loaddata import loadData
+from algor import algor1,algor2
 from sklearn.svm import SVC,LinearSVC
 from sklearn.tree import DecisionTreeRegressor,DecisionTreeClassifier
 if __name__=='__main__':
@@ -46,6 +47,12 @@ if __name__=='__main__':
     print('max error{0} {1}'.format(per,mx))
     print('min error{0} {1}'.format(perm,mn))
     print('avg error {0}'.format(avg))
+    a1,a2=algor1(data),algor2(data)
+    ft1,ft2=filterTree(a1.cal()),filterTree(a2.cal())
+    ft1.train(X,Y)
+    ft2.train(X,Y)
+    print('a1 error{0} {1}'.format(a1.cal(),ft1.perf(tX,tY)))
+    print('a2 error{0} {1}'.format(a2.cal(),ft2.perf(tX,tY)))
     #data.plot()
     #data.printData('exp/ed.dat')
     #ft[mj].plotClf()
