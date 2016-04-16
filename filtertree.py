@@ -6,19 +6,29 @@ from loaddata import loadData
 from leaves import leaves
 from sklearn.svm import SVC,LinearSVC
 from sklearn.tree import DecisionTreeRegressor,DecisionTreeClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 class filterTree:
-    def __init__(self,num):
+    def __init__(self,num,clf='linear'):
         #print("__init filterTree__")
         self.k=len(num)
         self.k=int(2**math.ceil(math.log(self.k,2)))
         self.num=num
-        #self.clf=[clf for i in range(self.k-1)]
-        #self.clf=[SVC(kernel='linear') for i in range(self.k-1)]
-        #self.clf=[SVC(kernel='poly') for i in range(self.k-1)]
-        #self.clf=[SVC(kernel='rbf') for i in range(self.k-1)]
-        self.clf=[DecisionTreeClassifier() for i in range(self.k-1)]
-        #self.clf=[DecisionTreeRegressor() for i in range(self.k-1)]
-        #self.clf=[LinearSVC() for i in range(self.k-1)]
+        if clf=='linear':
+            self.clf=[SVC(kernel='linear') for i in range(self.k-1)]
+        if clf=='rbf':
+            self.clf=[SVC(kernel='rbf') for i in range(self.k-1)]
+        if clf=='decision':
+            self.clf=[DecisionTreeClassifier() for i in range(self.k-1)]
+        if clf=='knn':
+            self.clf=[KNeighborsClassifier() for i in range(self.k-1)]
+        if clf=='nb':
+            self.clf=[GaussianNB() for i in range(self.k-1)]
+        if clf=='rf':
+            self.clf=[RandomForestClassifier() for i in range(self.k-1)]
+        if clf=='ada':
+            self.clf=[AdaBoostClassifier() for i in range(self.k-1)]
         self.dataX=[[] for i in range(self.k)]
         self.dataY=[[] for i in range(self.k)]
         self.winby=[0 for i in range(self.k)]
