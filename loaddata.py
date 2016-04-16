@@ -47,6 +47,7 @@ class loadData:
                 self.X.append([float(i) for i in tmp[:-1]])
                 self.Y.append(self.vcls[tmp[-1]])
         self.ninst=len(self.X)
+        self.nattrs=len(self.attrs)
         self.file.close()
 
     def show(self):
@@ -62,7 +63,7 @@ class loadData:
         return self.ninst
 
     def getNAttr(self):
-        return len(self.attrs)
+        return self.nattrs
 
     def getAttr(self): #getFeature
         return self.attrs
