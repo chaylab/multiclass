@@ -1,6 +1,7 @@
-# dat image file
-*.dait
+# dat image file txt
+*.dat
 *.png
+*.txt
 
 # experiment dir
 /exp
