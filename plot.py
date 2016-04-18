@@ -1,23 +1,33 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+import matplotlib.path as path
 from matplotlib.patches import Ellipse
 class loadEx:
     def __init__(self,fname):
-        self.file=open('exp/'+fname+'.dat','r')
+        self.file=open('exp/{0}.dat'.format(fname),'r')
+        self.filee=open('exp/{0}-exp.dat'.format(fname),'r')
         self.freq={}
         self.ext=[]
-
+        self.ndata=0
         self.load()
 
     def load(self):
         for line in self.file:
             if line[0]!='@':
+                self.ndata+=1
                 if line[:-1] in self.freq:
                     self.freq[line[:-1]]+=1
                 else:
-                    self.freq[line[:-1]]=0
-            else:
-                self.ext.append(float(line.split(' ')[1][:-1]))
+                    self.freq[line[:-1]]=1
+        self.file.close()
+        for line in self.filee:
+            tmp=line[:-1].split(' ')
+            self.ext.append([tmp[0],float(tmp[1])])
+        self.filee.close()
+
+    def getNData(self):
+        return self.ndata
 
     def getData(self):
         return self.freq
@@ -53,11 +63,11 @@ class loadBin:
                 else:
                     self.freqs[0][j]=k
             for j in range(len(self.exts[i])):
-                self.exts[0][j]+=self.exts[i][j]
+                self.exts[0][j][1]+=self.exts[i][j][1]
         for i,j in self.freqs[0].items():
             j/=self.n
         for i in range(len(self.exts[0])):
-            self.exts[0][i]/=self.n
+            self.exts[0][i][1]/=self.n
 
     def getData(self):
         return [(float(i),j) for i,j in self.freqs[0].items()]
@@ -92,33 +102,77 @@ class plotClf:
         plt.title('DataSet: '+self.rela+' , Binary Classifier: '+self.clf)
         fig=plt.figure(1,figsize=(8,8))
         ax=fig.add_subplot(111)
-        ax.annotate('mean: '+str(self.ext[0]), xy=(self.ext[0], 0), xycoords='data',
+        ax.annotate(self.ext[0][0], xy=(self.ext[0][1], 0), xycoords='data',
             xytext=(0, 50), textcoords='offset points',size=15,
             arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
-        ax.annotate('algor1: '+str(self.ext[1]), xy=(self.ext[1], 0), xycoords='data',
+        ax.annotate(self.ext[1][0], xy=(self.ext[1][1], 0), xycoords='data',
             xytext=(0, 70), textcoords='offset points',size=15,
             arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
-        ax.annotate('algor2: '+str(self.ext[2]), xy=(self.ext[2], 0), xycoords='data',
+        ax.annotate(self.ext[2][0], xy=(self.ext[2][1], 0), xycoords='data',
+            xytext=(0, 90), textcoords='offset points',size=15,
+            arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
+        plt.show()
+
+    def plot2(self):
+        X=np.array(self.freq)
+        fig, ax = plt.subplots()
+
+        # histogram our data with numpy
+        #data = np.random.randn(1000)
+        #n, bins = np.histogram(data, 50)
+        n, bins = X[:, 1],X[:, 0]
+        # get the corners of the rectangles for the histogram
+        left = np.array(bins[:-1])
+        right = np.array(bins[:-1])+np.array([0.007 for i in range(len(bins)-1)])
+        bottom = np.zeros(len(left))
+        top = bottom + n[:-1]
+        # we need a (numrects x numsides x 2) numpy array for the path helper
+        # function to build a compound path
+        XY = np.array([[left, left, right, right], [bottom, top, top, bottom]]).T
+
+        # get the Path object
+        barpath = path.Path.make_compound_path_from_polys(XY)
+
+        # make a patch out of it
+        patch = patches.PathPatch(
+            barpath, facecolor='blue', edgecolor='none', alpha=0.8)
+        ax.add_patch(patch)
+
+        # update the view limits
+        ax.set_xlim(left[0], right[-1])
+        ax.set_ylim(bottom.min(), top.max())
+        plt.xlabel('Error Rate')
+        plt.ylabel('Frequence')
+        plt.grid(True)
+        plt.title('DataSet: '+self.rela+' , Binary Classifier: '+self.clf)
+        ax.annotate(self.ext[0][0], xy=(self.ext[0][1], 0), xycoords='data',
+            xytext=(0, 50), textcoords='offset points',size=15,
+            arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
+        ax.annotate(self.ext[1][0], xy=(self.ext[1][1], 0), xycoords='data',
+            xytext=(0, 70), textcoords='offset points',size=15,
+            arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
+        ax.annotate(self.ext[2][0], xy=(self.ext[2][1], 0), xycoords='data',
             xytext=(0, 90), textcoords='offset points',size=15,
             arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
         plt.show()
 
 class plotData:
-    def __init__(self,rela,clf,nalgor=1):
+    def __init__(self,rela,clf):
         self.rela=rela
         self.clf=clf
-        self.n=4
+        self.n=10
         self.nclf=len(clf)
-        self.nalgor=nalgor+1
-        self.ealgor=[[0 for i in range(self.nclf)] for i in range(self.nalgor)]
+        self.ealgor=[[0 for i in range(self.nclf)] for i in range(10)]
 
         self.load()
 
     def load(self):
         for i in range(self.nclf):
             tmp=loadBin(self.rela,self.clf[i],self.n).getExt()
-            for j in range(self.nalgor): #avg was add
-                self.ealgor[j][i]=tmp[j]
+            self.lalgor=[j[0] for j in tmp]
+            self.nalgor=(len(tmp))
+            for j in range(len(tmp)):
+                self.ealgor[j][i]=tmp[j][1]
 
     def plot(self):
         fig=plt.figure(1,figsize=(8,8))
@@ -129,19 +183,21 @@ class plotData:
         for i in range(self.nalgor):
             rec.append(ax.bar([(j+width*i) for j in range(self.nclf)],
             tuple([1-j for j in self.ealgor[i]]), width,
-            [j for j in self.ealgor[i]],color=color[i]))
+            [j for j in self.ealgor[i]],color=color[i],alpha=0.5))
         ax.set_ylabel('Error rate')
         plt.ylim(1,0)
         plt.grid(True)
         ax.set_title('DataSet: '+self.rela)
         ax.set_xticks([i+width for i in range(self.nclf)])
         ax.set_xticklabels(self.clf)
-        ax.legend([i[0] for i in rec],['avg']+['algor'+str(i+1) for i in range(self.nalgor-1)])
+        ax.legend([i[0] for i in rec],self.lalgor)
         plt.show()
 
 
 if __name__=='__main__':
-    #pl=plotClf('yeast','linear',4)
-    #pl.plot()
-    pl=plotData('yeast',['linear','rbf','decision','knn','nb'],2)
+    if 0:
+        pl=plotClf('yeast','nb',10)
+    else:
+        pl=plotData('yeast',['linear','rbf','decision','knn','nb'])
+        #pl=plotData('yeast',['linear'])
     pl.plot()
