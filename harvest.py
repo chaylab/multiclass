@@ -6,14 +6,14 @@ from algor import algor1,algor2
 import multiprocessing as mp
 def fun(Data):
     rela,t,lv,N = Data
-    data=loadData('dataset/'+rela+'/'+rela+'-10dobscv-'+str(t)+'tra.dat')
-    tdata=loadData('dataset/'+rela+'/'+rela+'-10dobscv-'+str(t)+'tst.dat')
+    data=loadData('dataset/{0}/{0}-10dobscv-{1}tra.dat'.format(rela,t))
+    tdata=loadData('dataset/{0}/{0}-10dobscv-{1}tst.dat'.format(rela,t))
     X,Y=data.getData()
     tX,tY=tdata.getData()
     for clf in clfList:
-        str_='exp/'+rela+'-'+clf+'-'+str(t)+'.dat'
-        print(str_,'start')
+        str_='exp/{0}-{1}-{2}.dat'.format(rela,clf,t)
         fileName=open(str_,'w')
+        print(str_,'start')
         avg=0
         for i in lv:
             ft=filterTree(i,clf)
@@ -24,20 +24,14 @@ def fun(Data):
             #work+=x
             #print('{0}'.format(work),end='\r')
         print(str_,'done')
-        avg/=N
-        fileName.write('@avg {0}\n'.format(avg))
-        a1,a2=algor1(data),algor2(data)
-        ft1,ft2=filterTree(a1.cal(),clf),filterTree(a2.cal(),clf)
-        ft1.train(X,Y)
-        ft2.train(X,Y)
-        fileName.write('@a1 {0}\n'.format(ft1.perf(tX,tY)))
-        fileName.write('@a2 {0}\n'.format(ft2.perf(tX,tY)))
         fileName.close()
 
 
 if __name__=='__main__':
-    fileList=['yeast']
-    #fileList=['ecoli','flare','glass','led7digit','lymphography','nursery','page-blocks','satimage','vehicle']
+    fileList=['satimage']
+    #flare start with 0
+    #lym nursery input string
+    #fileList=['yeast','ecoli','flare','glass','lymphography','nursery','page-blocks','satimage','vehicle','led7digit']
     numList={'yeast':10,'ecoli':8,'flare':6,'glass':7,'led7digit':10,'lymphography':4,'nursery':5,'page-blocks':5,'satimage':7,'vehicle':4}
     #clfList=['linear']
     clfList=['linear','rbf','decision','knn','nb']
@@ -46,7 +40,7 @@ if __name__=='__main__':
     for rela in fileList:
         leaf=leaves(numList[rela])
         lv=leaf.getData()
-        for t in range(5,n):
+        for t in range(1,n):
             pool.apply_async(fun, args = ((rela,t,lv,leaf.getNData()),))
     pool.close()
     pool.join()
