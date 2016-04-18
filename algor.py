@@ -34,7 +34,8 @@ class algor1:
                 self.avgs[j]+=self.X[i][j]
         for j in range(self.data.getNAttr()):
             for i in range(self.data.getNCls()):
-                self.avg[i][j]/=self.ncls[i]
+                if self.ncls[i]>0:
+                    self.avg[i][j]/=self.ncls[i]
             self.avgs[j]/=self.data.getNData()
 
     def calSD(self):
@@ -69,7 +70,8 @@ class algor2:
                 self.ncls[self.Y[i]]+=1
         for i in range(self.data.getNCls()):
             for j in range(self.data.getNAttr()):
-                self.point[i][j]/=self.ncls[i]
+                if self.ncls[i]>0:
+                    self.point[i][j]/=self.ncls[i]
     def dist(self,a,b):
         dis=0
         for i in range(len(a)):
@@ -108,6 +110,13 @@ class algor2:
 
     def cal(self):
         return [i+1 for i in self.pair(self.num)]
+
+class algorContain:
+    def __init__(self):
+        self.algors=[algor1,algor2]
+
+    def getAlgor(self):
+        return self.algors
 
 if __name__=='__main__':
     data=loadData('dataset/vowel/vowel-10dobscv-1tra.dat')
