@@ -42,7 +42,7 @@ class filterTree:
     def clearPath(self,n,m): #n is pos of num of last leaf
         if n==0: return
         if m==1:
-            self.winby[n]=1
+            self.winby[n]=2
             #print("ban {0}".format(n))
         self.clearPath(int((n-1)/2),n%2)
 
@@ -65,15 +65,16 @@ class filterTree:
                 try:
                     self.clf[i].fit(A,B)
                 except:
-                    print(self.dataX[i])
+                    self.winby[i]=B[0]+1
+                    #print(self.dataX[i])
         #print("training complete")
         #[print (i,self.dataX[i], self.dataY[i]) for i in range(self.k-1)]
 
     def test(self,X,n=0): #X is list
         if n>=self.k-1:
             return n-(self.k-1)
-        if self.winby[n]==1:
-            pdt=[1]
+        if self.winby[n]>0:
+            pdt=[self.winby[n]-1]
         else:
             pdt=self.clf[n].predict([X])
         if pdt[0]==0:
