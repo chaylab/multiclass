@@ -80,7 +80,7 @@ class plotClf:
         self.rela=rela
         self.clf=clf
         self.n=n
-
+        self.lalgor=['best','attribute sort','longest seqment select','longest segment projection','random projection','avg','worst']
         self.load()
 
     def load(self):
@@ -90,7 +90,7 @@ class plotClf:
 
         self.freq=sorted(self.freq,key=lambda x: (x[0],x[1]))
 
-    def plot(self):
+    def plot2(self):
         print(self.ext)
         X=np.array(self.freq)
         el = Ellipse((2, -1), 0.5, 0.5)
@@ -102,18 +102,14 @@ class plotClf:
         plt.title('DataSet: '+self.rela+' , Binary Classifier: '+self.clf)
         fig=plt.figure(1,figsize=(8,8))
         ax=fig.add_subplot(111)
-        ax.annotate(self.ext[0][0], xy=(self.ext[0][1], 0), xycoords='data',
-            xytext=(0, 50), textcoords='offset points',size=15,
-            arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
-        ax.annotate(self.ext[1][0], xy=(self.ext[1][1], 0), xycoords='data',
-            xytext=(0, 70), textcoords='offset points',size=15,
-            arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
-        ax.annotate(self.ext[2][0], xy=(self.ext[2][1], 0), xycoords='data',
-            xytext=(0, 90), textcoords='offset points',size=15,
+
+        for i in range(len(self.ext)):
+            ax.annotate(self.lalgor[i], xy=(self.ext[i][1], 0), xycoords='data',
+            xytext=(0, (i+1)*40), textcoords='offset points',size=15,bbox=dict(boxstyle="round", fc="0.8"),
             arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
         plt.show()
 
-    def plot2(self):
+    def plot(self):
         X=np.array(self.freq)
         fig, ax = plt.subplots()
 
@@ -145,14 +141,10 @@ class plotClf:
         plt.ylabel('Frequence')
         plt.grid(True)
         plt.title('DataSet: '+self.rela+' , Binary Classifier: '+self.clf)
-        ax.annotate(self.ext[0][0], xy=(self.ext[0][1], 0), xycoords='data',
-            xytext=(0, 50), textcoords='offset points',size=15,
-            arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
-        ax.annotate(self.ext[1][0], xy=(self.ext[1][1], 0), xycoords='data',
-            xytext=(0, 70), textcoords='offset points',size=15,
-            arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
-        ax.annotate(self.ext[2][0], xy=(self.ext[2][1], 0), xycoords='data',
-            xytext=(0, 90), textcoords='offset points',size=15,
+        [print('{1} {0:.2f}'.format(i[1]*100,i[0])) for i in self.ext]
+        for i in range(len(self.ext)):
+            ax.annotate(self.lalgor[i], xy=(self.ext[i][1], 0), xycoords='data',
+            xytext=(0, (i+1)*40), textcoords='offset points',size=15,bbox=dict(boxstyle="round", fc="0.8"),
             arrowprops=dict(arrowstyle="->",connectionstyle="angle,angleA=0,angleB=90,rad=5"),)
         plt.show()
 
@@ -163,13 +155,13 @@ class plotData:
         self.n=10
         self.nclf=len(clf)
         self.ealgor=[[0 for i in range(self.nclf)] for i in range(10)]
-
+        self.lalgor=['best','attribute sort','longest seqment select','longest segment projection','random projection','avg','worst']
         self.load()
 
     def load(self):
         for i in range(self.nclf):
             tmp=loadBin(self.rela,self.clf[i],self.n).getExt()
-            self.lalgor=[j[0] for j in tmp]
+            #self.lalgor=[j[0] for j in tmp]
             self.nalgor=(len(tmp))
             for j in range(len(tmp)):
                 self.ealgor[j][i]=tmp[j][1]
@@ -177,7 +169,7 @@ class plotData:
     def plot(self):
         fig=plt.figure(1,figsize=(8,8))
         ax=fig.add_subplot(111)
-        color='rbgyc'
+        color='rbgycrrr'
         width=0.1
         rec=[]
         for i in range(self.nalgor):
@@ -190,14 +182,5 @@ class plotData:
         ax.set_title('DataSet: '+self.rela)
         ax.set_xticks([i+width for i in range(self.nclf)])
         ax.set_xticklabels(self.clf)
-        ax.legend([i[0] for i in rec],self.lalgor)
+        ax.legend([i[0] for i in rec],self.lalgor,fontsize=10)
         plt.show()
-
-
-if __name__=='__main__':
-    if 0:
-        pl=plotClf('yeast','nb',10)
-    else:
-        pl=plotData('yeast',['linear','rbf','decision','knn','nb'])
-        #pl=plotData('yeast',['linear'])
-    pl.plot()

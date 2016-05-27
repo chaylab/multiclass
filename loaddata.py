@@ -49,9 +49,30 @@ class loadData:
         self.ninst=len(self.X)
         self.nattrs=len(self.attrs)
         self.file.close()
+        self.makeStat()
+
+    def makeStat(self):
+        self.avg=[0 for i in range(self.nattrs)]
+        self.SD=[0 for i in range(self.nattrs)]
+        for i in range(self.ninst):
+            for j in range(self.nattrs):
+                self.avg[j]+=self.X[i][j]
+        for j in range(self.nattrs):
+            self.avg[j]/=self.ninst
+        for i in range(self.ninst):
+            for j in range(self.nattrs):
+                self.SD[j]+=(self.X[i][j]-self.avg[j])**(2)
+        for j in range(self.nattrs):
+            self.SD[j]=self.SD[j]**(0.5)
 
     def show(self):
         [print(self.X[i],self.Y[i]) for i in range(self.ninst)]
+
+    def getSD(self):
+        return self.SD
+
+    def getAvg(self):
+        return self.avg
 
     def getNCls(self): #getK
         return self.ncls
@@ -81,8 +102,3 @@ class loadData:
             plt.scatter(x,y, marker='x',color=z, label=str(i+1))
         plt.legend(scatterpoints=1,fontsize=8)
         plt.show()
-
-if __name__=='__main__':
-    dat=loadData('dataset/yeast/yeast-10dobscv-1tra.dat')
-    dat.show()
-    [print(i.name,i.bound) for i in dat.getAttr()]

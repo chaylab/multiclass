@@ -116,36 +116,3 @@ class filterTree:
             plt.xticks(())
             plt.yticks(())
         plt.show()
-
-if __name__=='__main__':
-
-    #ft=filterTree([1,2,3,4])
-    #ft.train([[1,0],[0,1],[-1,-1],[-2,-2],[1,-2],[-2,1]],[0,0,2,2,1,3])
-    #ft.plotClf()
-    #print (ft.test([1.5,-1.5]))
-
-    ft=filterTree([2,1,4,3,5])
-    ft.train([(3, 3), (9, 9), (6, 6), (15, 15), (12, 12)],[0,1,2,3,4])
-    ft.plotClf()
-
-    '''for i in range(1,11):
-        s="led7digit"
-        n=10
-        stra='dataset/'+s+'/'+s+'-'+str(n)+'dobscv-'+str(i)+'tra.dat'
-        stst='dataset/'+s+'/'+s+'-'+str(n)+'dobscv-'+str(i)+'tst.dat'
-        data=loadData(stra)
-        data.load()
-        tst=loadData(stst)
-        tst.load()
-        #print("load {0} complete".format(stra))
-        lv=leaves(data.getK()).getAll()
-        #print("generate leaves complete")
-        mx=0
-        for i in lv:
-            ft=filterTree(i)
-            ft.train(data.getX(),data.getY())
-            er=ft.perf(tst.getX(),tst.getY())
-            if er>mx:
-                mx=er
-                per=i[:]
-        print (per,mx)'''

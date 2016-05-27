@@ -1,4 +1,5 @@
 import math
+import numpy as np
 from loaddata import loadData
 
 class algor1:
@@ -77,6 +78,7 @@ class algor2:
         for i in range(len(a)):
             dis+=(a[i]-b[i])**2
         return dis**(0.5)
+
     def calPath(self):
         for i in range(self.data.getNCls()):
             for j in range(i+1,self.data.getNCls()):
@@ -111,16 +113,43 @@ class algor2:
     def cal(self):
         return [i+1 for i in self.pair(self.num)]
 
+class algor3(algor2):
+    def scalar(self,v,tmp=0):
+        for i in v:
+            tmp+=i**2
+        return tmp**(0.5)
+
+    def shadow(self,va,vb):
+        if self.scalar(vb)==0.0000000000:
+            return self.listPath[0][2]+1
+        return np.dot(va,vb)/self.scalar(vb)
+
+    def tov(self,a,b):
+        return [b[i]-a[i] for i in range(len(a))]
+
+    def getRef(self):
+        return self.tov(self.point[self.listPath[0][0]],self.point[self.listPath[0][1]])
+
+    def cal(self):
+        tmp=[]
+        va=self.getRef()
+        for i in range(self.data.getNCls()):
+            vb=self.tov(self.point[self.listPath[0][0]],self.point[i])
+            tmp.append((self.shadow(va,vb),i))
+        tmp=sorted(tmp,key=lambda x: x[0])
+        return [i[1]+1 for i in tmp]
+
+class algor4(algor3):
+    def getRef(self):
+        SD=[max(0.000001,i) for i in self.data.getSD()]
+        avg=self.data.getAvg()
+        a=[np.random.normal(avg[i], SD[i], 1)[0] for i in range(self.data.getNAttr())]
+        b=[np.random.normal(avg[i], SD[i], 1)[0] for i in range(self.data.getNAttr())]
+        return self.tov(a,b)
+
 class algorContain:
     def __init__(self):
-        self.algors=[algor1,algor2]
+        self.algors=[algor1,algor2,algor3,algor4]
 
     def getAlgor(self):
         return self.algors
-
-if __name__=='__main__':
-    data=loadData('dataset/vowel/vowel-10dobscv-1tra.dat')
-    #algor=algor1(data)
-    #print(algor.cal())
-    algor2=algor2(data)
-    print(algor2.cal())

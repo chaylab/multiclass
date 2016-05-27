@@ -47,10 +47,3 @@ class genData(object):
 
     def getK(self):
         return self.n
-
-if __name__=='__main__':
-    #data=genData([2,1,3,4,5],1000,200)
-    #data.plot()
-    data=genData([2,1,3,4,5],100,20)
-    data.plot()
-    #data.printData('dat1.in')

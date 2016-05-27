@@ -72,8 +72,3 @@ class leaves:
 
     def showData(self):
         [print(i) for i in self.data]
-
-if __name__ == '__main__':
-    leaf=leaves(10)
-    #leaf.showTar(2)
-    print(leaf.getNData())
