@@ -11,6 +11,9 @@ class attr:
     def getBound(self):
         return self.bound
 
+    def getRange(self):
+        return self.bound[1]-self.bound[0]
+
 class loadData:
     def __init__(self,fname='in.dat'):
         try:
@@ -20,34 +23,61 @@ class loadData:
             return False
 
         self.attrs=[]
-        self.vcls={}
+        self.map=[]
         self.ncls=2
+        self.ninst=0
+        self.nattrs=0
+        self.seq=[]
+        self.out=[]
         self.X=[]
         self.Y=[]
         self.load()
 
     def load(self):
-        for str in self.file:
-            if re.match('@\w*',str)!=None:
-                lst=str.split(' ')
+        for str_ in self.file:
+            if re.match('@\w*',str_)!=None:
+                lst=str_.split(' ')
                 if lst[0]=='@relation':
                     self.name=lst[1]
                 elif lst[0]=='@attribute':
                     if len(lst)==3:
                         tmp=lst[2][lst[2].index('[')+1:lst[2].index(']')].split(',')
                         self.attrs.append(attr(lst[1],(float(tmp[0]),float(tmp[1]))))
+                        self.map.append(0)
                     else:
                         j=0
+                        tmp={}
                         for i in lst[1][lst[1].index('{')+1:lst[1].index('}')].split(','):
-                            self.vcls[i]=j
+                            tmp[i]=j
                             j+=1
-                        self.ncls=j
+                        self.map.append(tmp)
+                        self.attrs.append(attr(lst[1][:lst[1].index('{')],(0,j)))
+                elif lst[0]=='@inputs':
+                    self.seq=lst[1][:-1].split(',')
+                    for i in range(len(self.seq)):
+                        for j in range(len(self.attrs)):
+                            if self.seq[i]==self.attrs[j].getName():
+                                self.map[i],self.map[j]=self.map[j],self.map[i]
+                                self.attrs[i],self.attrs[j]=self.attrs[j],self.attrs[i]
+                                break
+                elif lst[0]=='@outputs':
+                    self.out=lst[1][:-1]
             else:
-                tmp=str[:-1].split(', ')
-                self.X.append([float(i) for i in tmp[:-1]])
-                self.Y.append(self.vcls[tmp[-1]])
+                tmp=str_[:-1].split(', ')
+                x,y=[],[]
+                for i in range(len(tmp)):
+                    if i <len(self.seq):
+                        if self.map[i]==0:
+                            x.append(float(tmp[i]))
+                        else:
+                            x.append(float(self.map[i][tmp[i]]))
+                    else:
+                        y.append(float(self.map[i][tmp[i]]))
+                self.X.append(x)
+                self.Y.append(y)
         self.ninst=len(self.X)
-        self.nattrs=len(self.attrs)
+        self.nattrs=len(self.attrs)-1
+        self.ncls=self.attrs[-1].getRange()
         self.file.close()
         self.makeStat()
 
