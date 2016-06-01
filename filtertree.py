@@ -89,30 +89,3 @@ class filterTree:
             if ans==Y[i]:
                 cor+=1
         return (l-cor)/l
-
-    def plotClf(self):
-        for i in range(0,1):
-        #for i in range(self.k-1)
-            if self.winby[i]==1 or len(self.dataX[i])==0: continue
-            X=np.array(self.dataX[i])
-            Y=self.dataY[i]
-            plt.figure(i, figsize=(8, 8))
-            plt.title('classifier{0} {1}'.format(i,repr(self.num)))
-            plt.clf()
-            plt.scatter(self.clf[i].support_vectors_[:, 0], self.clf[i].support_vectors_[:, 1], s=80,facecolors='none', zorder=10)
-            #plt.scatter(X[:, 0], X[:, 1], c=Y, zorder=10, cmap=plt.cm.Paired)
-            plt.scatter(X[:, 0], X[:, 1], c=Y, zorder=10, marker='x')
-
-            plt.axis('tight')
-            x_min,x_max,y_min,y_max= -5,20,-5,20
-            XX, YY = np.mgrid[x_min:x_max:200j, y_min:y_max:200j]
-            Z = self.clf[i].decision_function(np.c_[XX.ravel(), YY.ravel()])
-            Z = Z.reshape(XX.shape)
-            plt.figure(i, figsize=(8, 8))
-            plt.pcolormesh(XX, YY, Z > 0, cmap=plt.cm.Paired)
-            plt.contour(XX, YY, Z, colors=['r', 'k', 'b'], linestyles=['--', '-', '--'],levels=[-.5, 0, .5])
-            plt.xlim(x_min, x_max)
-            plt.ylim(y_min, y_max)
-            plt.xticks(())
-            plt.yticks(())
-        plt.show()
