@@ -72,9 +72,9 @@ class loadData:
                         else:
                             x.append(float(self.map[i][tmp[i]]))
                     else:
-                        y.append(float(self.map[i][tmp[i]]))
+                        y.append(int(self.map[i][tmp[i]]))
                 self.X.append(x)
-                self.Y.append(y)
+                self.Y.append(y[0])
         self.ninst=len(self.X)
         self.nattrs=len(self.attrs)-1
         self.ncls=self.attrs[-1].getRange()
