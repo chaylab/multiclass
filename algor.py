@@ -16,6 +16,9 @@ class algor1:
         self.calSD()
         #self.cal()
 
+    def getName(self):
+        return "attribute sort"
+
     def reScale(self): # to 0-1
         X,self.Y=self.data.getData()
         attrs=self.data.getAttr()
@@ -64,6 +67,10 @@ class algor2:
 
         self.calAvg()
         self.calPath()
+
+    def getName(self):
+        return "longest_path_first"
+
     def calAvg(self):
         for i in range(self.data.getNData()):
             for j in range(self.data.getNAttr()):
@@ -114,6 +121,9 @@ class algor2:
         return [i+1 for i in self.pair(self.num)]
 
 class algor3(algor2):
+    def getName(self):
+        return "longest_path_projection"
+
     def scalar(self,v,tmp=0):
         for i in v:
             tmp+=i**2
@@ -140,12 +150,25 @@ class algor3(algor2):
         return [i[1]+1 for i in tmp]
 
 class algor4(algor3):
+    def getName(self):
+        return "random_path_projection"
+
     def getRef(self):
         SD=[max(0.000001,i) for i in self.data.getSD()]
         avg=self.data.getAvg()
         a=[np.random.normal(avg[i], SD[i], 1)[0] for i in range(self.data.getNAttr())]
         b=[np.random.normal(avg[i], SD[i], 1)[0] for i in range(self.data.getNAttr())]
         return self.tov(a,b)
+
+class random:
+    def __init__(self,data):
+        self.tmp=[i for i in range(1,data.getNCls()+1)]
+
+    def getName(self):
+        return "random"
+
+    def cal(self):
+        return random.shuffle(tmp)
 
 class algorContain:
     def __init__(self):
